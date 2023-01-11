@@ -1,26 +1,11 @@
 package cslog
 
 import (
-	"b/cnf"
 	"fmt"
 	"time"
+
+	"b/cnf"
 )
-
-func Fail(c string) {
-
-	/*
-		Closed:	False
-		Author:	Makarov Aleksei
-		Target:	Show `FAIL` log
-	*/
-
-	fmt.Printf(
-		"INFO -- %s -- %s \n",
-		time.Now().Format("2006-01-02 15:04:05"),
-		cnf.Logs[c],
-	)
-
-}
 
 func Info(c string) {
 
@@ -32,7 +17,28 @@ func Info(c string) {
 
 	fmt.Printf(
 		"INFO -- %s -- %s \n",
+
 		time.Now().Format("2006-01-02 15:04:05"),
+
+		cnf.Logs[c],
+	)
+
+}
+
+func Fail(c string, e string) {
+
+	/*
+		Closed:	False
+		Author:	Makarov Aleksei
+		Target:	Show `FAIL` log
+	*/
+
+	fmt.Printf(
+		"FAIL -- %s -- %s -- %s \n",
+
+		time.Now().Format("2006-01-02 15:04:05"),
+
+		e,
 		cnf.Logs[c],
 	)
 

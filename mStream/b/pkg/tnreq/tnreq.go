@@ -2,13 +2,15 @@ package tnreq
 
 import (
 	"b/pkg/cslog"
+
 	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
 // ------------------------------------------------------------------------- //
 
-func getClient() (*http.Client, error) {
+func client() (*http.Client, error) {
 
 	/*
 		Closed:	False
@@ -16,9 +18,18 @@ func getClient() (*http.Client, error) {
 		Target:	Get HTTP request client
 	*/
 
-	t = &http.Transport{Proxy: http.ProxyURL("socks5://127.0.0.1:9050")}
+	u, err := url.Parse("socks5://127.0.0.1:9050")
+	if err != nil {
+		cslog.Fail(
+			`F00000001`,
+			err.Error(),
+		)
+		return nil, err
+	}
 
-	return &http.Client{Transport: t}, nil
+	return &http.Client{
+		Transport: &http.Transport{Proxy: http.ProxyURL(u)},
+	}, nil
 
 }
 
@@ -29,13 +40,14 @@ func Get(u string) ([]byte, error) {
 	/*
 		Closed:	False
 		Author:	Makarov Aleksei
-		Target:	Making HTTP/GET request
+		Target:	Making HTTP/GET request via tor network
 	*/
 
-	c, err := getClient()
+	c, err := client()
 	if err != nil {
 		cslog.Fail(
-			`F002`,
+			`F00000001`,
+			err.Error(),
 		)
 		return nil, err
 	}
@@ -43,7 +55,8 @@ func Get(u string) ([]byte, error) {
 	r, err := c.Get(u)
 	if err != nil {
 		cslog.Fail(
-			`F003`,
+			`F00000001`,
+			err.Error(),
 		)
 		return nil, err
 	}
@@ -51,7 +64,8 @@ func Get(u string) ([]byte, error) {
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		cslog.Fail(
-			`F004`,
+			`F00000001`,
+			err.Error(),
 		)
 		return nil, err
 	}

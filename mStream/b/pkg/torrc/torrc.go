@@ -5,26 +5,46 @@ import (
 	"net/textproto"
 )
 
-func Signal(c *textproto.Conn, s string) (int, string, error) {
+func Ctrl() (*textproto.Conn, error) {
 
 	/*
 		Closed:	False
 		Author:	Makarov Aleksei
-		Target:	Sending signal to tor node
+		Target:	Get tor node controller
 	*/
 
-	r, err := c.Cmd(s)
+	c, err := textproto.Dial("tcp", "127.0.0.1:9050")
 	if err != nil {
 		cslog.Fail(
-			"F001",
+			`F001`,
+		)
+		return nil, err
+	}
+
+	return c, nil
+}
+
+func SendSignal(c *textproto.Conn, s string) (int, string, error) {
+
+	/*
+		Closed:	False
+		Author:	Makarov Aleksei
+		Target:	Send signal to tor node controller
+	*/
+
+	i, err := c.Cmd("SIGNAL " + s)
+	if err != nil {
+		cslog.Fail(
+			`F001`,
 		)
 		return 0, "", err
 	}
 
-	c.StartResponse(r)
+	c.StartResponse(i)
+	defer c.EndResponse(i)
 
-	defer c.EndResponse(r)
+	z, v, t := c.ReadResponse(20)
 
-	return c.ReadResponse(250)
+	return z, v, t
 
 }
