@@ -25,7 +25,7 @@ func Info(c string) {
 
 }
 
-func Fail(c string, e string) {
+func Fail(c string) {
 
 	/*
 		Closed:	False
@@ -34,11 +34,10 @@ func Fail(c string, e string) {
 	*/
 
 	fmt.Printf(
-		"FAIL -- %s -- %s -- %s \n",
+		"FAIL -- %s -- %s \n",
 
 		time.Now().Format("2006-01-02 15:04:05"),
 
-		e,
 		cnf.Logs[c],
 	)
 

@@ -3,8 +3,9 @@ package cnf
 import "regexp"
 
 var (
-	Logs = map[string]string{
-		`F001`: ``,
+	DbPath string = "/Users/makarov/Desktop/pets/mStream/b/mStream.db"
+	Logs          = map[string]string{
+		`F0000001`: `Error while creating new connection with database`,
 	}
 	Host string = "https://www.youtube.com"
 

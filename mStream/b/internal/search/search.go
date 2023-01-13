@@ -26,7 +26,7 @@ type SearchRes struct {
 
 // ------------------------------------------------------------------------- //
 
-func parseRes(r []byte) (sr []*SearchRes, err error) {
+func parseResponse(r []byte) (sr []*SearchRes, err error) {
 
 	/*
 		Closed:	False
@@ -51,7 +51,7 @@ func parseRes(r []byte) (sr []*SearchRes, err error) {
 
 }
 
-func fetchRes(p *string) ([]byte, error) {
+func fetchResponse(p *string) ([]byte, error) {
 
 	/*
 		Closed:	False
@@ -85,6 +85,7 @@ func Do(q string, t string) {
 		Author:	Makarov Aleksei
 		Target:
 	*/
+
 }
 
 // ------------------------------------------------------------------------- //

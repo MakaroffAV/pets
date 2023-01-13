@@ -31,7 +31,7 @@ var casesTestFetchRes = []caseTestFetchRes{
 
 var casesTestParseRes = []caseTestParseRes{
 	{
-		q: "G-Eazy - The Beauti",
+		q: "g eazy",
 		e: SearchRes{
 			Id: "6PUf1Rj4kpc",
 			Ch: "G-Eazy",
@@ -53,7 +53,7 @@ func TestFetchRes(t *testing.T) {
 	*/
 
 	for _, c := range casesTestFetchRes {
-		_, err := fetchRes(&c.q)
+		_, err := fetchResponse(&c.q)
 		if err != nil {
 			t.Fatalf(
 				`
@@ -77,7 +77,7 @@ func TestParseRes(t *testing.T) {
 
 	for _, c := range casesTestParseRes {
 
-		b, err := fetchRes(&c.q)
+		b, err := fetchResponse(&c.q)
 		if err != nil {
 			t.Fatalf(
 				`
@@ -87,7 +87,7 @@ func TestParseRes(t *testing.T) {
 			)
 		}
 
-		r, err := parseRes(b)
+		r, err := parseResponse(b)
 		if err != nil {
 			t.Fatalf(
 				`
