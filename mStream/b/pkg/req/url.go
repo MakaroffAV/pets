@@ -1,6 +1,9 @@
 package req
 
-import "net/url"
+import (
+	"fmt"
+	"net/url"
+)
 
 type Url struct {
 
@@ -11,11 +14,11 @@ type Url struct {
 				describing the url params
 	*/
 
-	Prcl *string
-	Host *string
+	Href string
+	Qprm map[string]string
 }
 
-func (u Url) Build() {
+func (u Url) Build() string {
 
 	/*
 		Closed:	False
@@ -23,5 +26,11 @@ func (u Url) Build() {
 		Target:	Build the url by params
 	*/
 
-	u := url.URL{}
+	q := url.Values{}
+	for k, v := range u.Qprm {
+		q.Add(k, v)
+	}
+
+	return fmt.Sprintf("%s?%s", u.Href, q.Encode())
+
 }

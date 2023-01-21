@@ -1,10 +1,14 @@
 package req
 
 import (
+	"b/pkg/cslog"
+	"io/ioutil"
 	"net/http"
 )
 
-type Request struct {
+// ------------------------------------------------------------------------- //
+
+type request struct {
 
 	/*
 		Closed:	False
@@ -13,16 +17,25 @@ type Request struct {
 				describing the HTTP request`s params
 	*/
 
-	url string
+	href *string
+	meth *string
 
-	Href *string
-	Meth *string
+	hParams *map[string]string
+	qParams *map[string]string
 
-	ParamsH *map[string]string
-	ParamsQ *map[string]string
+	enq    *http.Request
+	enqErr error
+
+	res    *http.Response
+	resErr error
+
+	cnt    []byte
+	cntErr error
 }
 
-func (r *Request) setUpReq() {
+// ------------------------------------------------------------------------- //
+
+func (r *request) setUpReq() {
 
 	/*
 		Closed:	False
@@ -30,16 +43,23 @@ func (r *Request) setUpReq() {
 		Target:	Setting up the request config
 	*/
 
-	u := Url{}
+	u := Url{
+		Href: *r.Href,
+		Qprm: *r.ParamsQ,
+	}
 
-	q, err := http.NewRequest(*r.Meth, r.url, nil)
+	q, err := http.NewRequest(*r.Meth, u.Build(), nil)
 	if err != nil {
 		return
 	}
 
+	for k, v := range *r.ParamsH {
+		q.Header.Set(k, v)
+	}
+
 }
 
-func (r *Request) fetchReq() {
+func (r *request) fetchReq() {
 
 	/*
 		Closed:	False
@@ -47,18 +67,37 @@ func (r *Request) fetchReq() {
 		Target:	Fetching HTTP request
 	*/
 
+	c, err := setUpClient()
+	if err != nil {
+		return
+	}
+
+	r.res, r.resErr = c.Do(r.enq)
+	if r.resErr != nil {
+		return
+	}
+
 }
 
-func (r *Request) parseReq() {
+func (r *request) parseRes() {
 
 	/*
 		Closed:	False
 		Author:	Makarov Aleksei
 		Target:	Parsing HTTP request
 	*/
+
+	r.cnt, r.cntErr = ioutil.ReadAll(r.res.Body)
+	if r.cntErr != nil {
+		cslog.Fail("r0", r.cntErr)
+		return
+	}
+
 }
 
-func (r Request) Do() {
+// ------------------------------------------------------------------------- //
+
+func (r request) Do() {
 
 	/*
 		Closed:	False
@@ -66,21 +105,10 @@ func (r Request) Do() {
 		Target:	Execute the HTTP request
 	*/
 
-	q, err := r.setUpReq()
-	if err != nil {
-		return nil, err
-	}
-
-	r, err := fetchReq()
-	if err != nil {
-		return nil, err
-	}
-
-	b, err := parseRes()
-	if err != nil {
-		return nil, err
-	}
-
-	return b, nil
+	r.setUpReq()
+	r.fetchReq()
+	r.fetchReq()
 
 }
+
+// ------------------------------------------------------------------------- //
