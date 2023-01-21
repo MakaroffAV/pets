@@ -5,6 +5,8 @@ var (
 	methPost string = "POST"
 )
 
+// ------------------------------------------------------------------------- //
+
 func Get(u string, qParams, hParams map[string]string) ([]byte, error) {
 
 	/*
@@ -28,3 +30,5 @@ func Get(u string, qParams, hParams map[string]string) ([]byte, error) {
 	return respBd, nil
 
 }
+
+// ------------------------------------------------------------------------- //

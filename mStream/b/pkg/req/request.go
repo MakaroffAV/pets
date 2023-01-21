@@ -1,7 +1,6 @@
 package req
 
 import (
-	"b/pkg/cslog"
 	"io/ioutil"
 	"net/http"
 )
@@ -69,7 +68,7 @@ func (r *request) fetchReq() {
 
 	c, err := setUpClient()
 	if err != nil {
-		return
+		r.resErr = err
 	}
 
 	r.res, r.resErr = c.Do(r.req)
@@ -89,7 +88,6 @@ func (r *request) parseRes() {
 
 	r.cnt, r.cntErr = ioutil.ReadAll(r.res.Body)
 	if r.cntErr != nil {
-		cslog.Fail("r0", r.cntErr)
 		return
 	}
 
@@ -106,27 +104,22 @@ func (r request) Do() ([]byte, error) {
 	*/
 
 	r.setUpReq()
-	r.fetchReq()
-	r.fetchReq()
+	if r.reqErr != nil {
+		return nil, r.reqErr
+	}
 
-	if r.checkErrors() == true {
-		return nil, errReq
+	r.fetchReq()
+	if r.resErr != nil {
+		return nil, r.resErr
+	}
+
+	r.parseRes()
+	if r.cntErr != nil {
+		return nil, r.cntErr
 	}
 
 	return r.cnt, nil
-}
 
-func (r request) checkErrors() bool {
-
-	/*
-		Closed:	False
-		Author:	Makarov Aleksei
-		Target:	Check errors
-	*/
-
-	if r.reqErr != nil {
-
-	}
 }
 
 // ------------------------------------------------------------------------- //
