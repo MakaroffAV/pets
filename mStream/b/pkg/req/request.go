@@ -23,8 +23,8 @@ type request struct {
 	hParams *map[string]string
 	qParams *map[string]string
 
-	enq    *http.Request
-	enqErr error
+	req    *http.Request
+	reqErr error
 
 	res    *http.Response
 	resErr error
@@ -43,18 +43,18 @@ func (r *request) setUpReq() {
 		Target:	Setting up the request config
 	*/
 
-	u := Url{
-		Href: *r.Href,
-		Qprm: *r.ParamsQ,
+	u := rUrl{
+		href:    *r.href,
+		qParams: *r.qParams,
 	}
 
-	q, err := http.NewRequest(*r.Meth, u.Build(), nil)
-	if err != nil {
+	r.req, r.reqErr = http.NewRequest(*r.meth, u.Build(), nil)
+	if r.reqErr != nil {
 		return
 	}
 
-	for k, v := range *r.ParamsH {
-		q.Header.Set(k, v)
+	for k, v := range *r.hParams {
+		r.req.Header.Add(k, v)
 	}
 
 }
@@ -72,7 +72,7 @@ func (r *request) fetchReq() {
 		return
 	}
 
-	r.res, r.resErr = c.Do(r.enq)
+	r.res, r.resErr = c.Do(r.req)
 	if r.resErr != nil {
 		return
 	}
@@ -97,7 +97,7 @@ func (r *request) parseRes() {
 
 // ------------------------------------------------------------------------- //
 
-func (r request) Do() {
+func (r request) Do() ([]byte, error) {
 
 	/*
 		Closed:	False
@@ -109,6 +109,24 @@ func (r request) Do() {
 	r.fetchReq()
 	r.fetchReq()
 
+	if r.checkErrors() == true {
+		return nil, errReq
+	}
+
+	return r.cnt, nil
+}
+
+func (r request) checkErrors() bool {
+
+	/*
+		Closed:	False
+		Author:	Makarov Aleksei
+		Target:	Check errors
+	*/
+
+	if r.reqErr != nil {
+
+	}
 }
 
 // ------------------------------------------------------------------------- //

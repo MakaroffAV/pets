@@ -13,25 +13,25 @@ type caseTestUrlBuild struct {
 				describing the case
 	*/
 
-	arg Url
+	arg rUrl
 	exp string
 }
 
 var (
 	testCasesUrlBuild = []caseTestUrlBuild{
 		{
-			arg: Url{
-				Href: "https://yandex.ru/search/",
-				Qprm: map[string]string{
+			arg: rUrl{
+				href: "https://yandex.ru/search/",
+				qParams: map[string]string{
 					"arg1": "golang for web",
 				},
 			},
 			exp: "https://yandex.ru/search/?arg1=golang+for+web",
 		},
 		{
-			arg: Url{
-				Href: "https://yandex.ru/search/",
-				Qprm: map[string]string{
+			arg: rUrl{
+				href: "https://yandex.ru/search/",
+				qParams: map[string]string{
 					"arg1": "golang for web",
 					"arg2": "duck&duck2gooo",
 				},

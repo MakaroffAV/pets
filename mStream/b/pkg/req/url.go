@@ -5,7 +5,7 @@ import (
 	"net/url"
 )
 
-type Url struct {
+type rUrl struct {
 
 	/*
 		Closed:	False
@@ -14,11 +14,11 @@ type Url struct {
 				describing the url params
 	*/
 
-	Href string
-	Qprm map[string]string
+	href    string
+	qParams map[string]string
 }
 
-func (u Url) Build() string {
+func (u rUrl) Build() string {
 
 	/*
 		Closed:	False
@@ -27,10 +27,10 @@ func (u Url) Build() string {
 	*/
 
 	q := url.Values{}
-	for k, v := range u.Qprm {
+	for k, v := range u.qParams {
 		q.Add(k, v)
 	}
 
-	return fmt.Sprintf("%s?%s", u.Href, q.Encode())
+	return fmt.Sprintf("%s?%s", u.href, q.Encode())
 
 }

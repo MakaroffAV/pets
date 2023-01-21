@@ -1,10 +1,11 @@
 package req
 
 var (
-	methGet string = "GET"
+	methGet  string = "GET"
+	methPost string = "POST"
 )
 
-func Get(u string, qPrms, hPrms map[string]string) ([]byte, error) {
+func Get(u string, qParams, hParams map[string]string) ([]byte, error) {
 
 	/*
 		Closed:	False
@@ -12,13 +13,18 @@ func Get(u string, qPrms, hPrms map[string]string) ([]byte, error) {
 		Target:	Do HTTP/GET request
 	*/
 
-	r := Request{
-		Href: &u,
-		Meth: &methGet,
+	r := request{
+		href:    &u,
+		meth:    &methGet,
+		hParams: &hParams,
+		qParams: &qParams,
 	}
 
-	resp, err := r.
+	respBd, err := r.Do()
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	return respBd, nil
 
 }
