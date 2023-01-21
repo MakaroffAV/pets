@@ -30,7 +30,7 @@ func CheckToken(t *string) (bool, error) {
 
 	defer r.Close()
 
-	fmt.Println(r)
+	fmt.Println(r.)
 
 	return true, nil
 

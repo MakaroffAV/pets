@@ -1,28 +1,27 @@
 package torrc
 
 import (
-	"fmt"
 	"testing"
 )
 
-func TestCtrl(t *testing.T) {
+func TestGetCtrl(t *testing.T) {
 
 	/*
 		Closed:	False
 		Author:	Makarov Aleksei
-		Target:	Test "Get tor node controller"
+		Target:	Test "Create the new tor controller"
 	*/
 
-	_, err := Ctrl()
+	_, err := GetCtrl()
 	if err != nil {
 		t.Fatalf(
 			`
-				Test failed:	Test "Get tor node controller"
-								(getting tor node controller error)
+				Test failed:	"Creating the new tor controller"
+								(occurred error %s)
 			`,
+			err.Error(),
 		)
 	}
-
 }
 
 func TestSendSignal(t *testing.T) {
@@ -30,29 +29,16 @@ func TestSendSignal(t *testing.T) {
 	/*
 		Closed:	False
 		Author:	Makarov Aleksei
-		Target:	Test "Send signal to tor node controller"
+		Target:	Test "Send signal to tor controller"
 	*/
 
-	c, err := Ctrl()
+	c, err := GetCtrl()
 	if err != nil {
-		t.Fatalf(
-			`
-				Test failed:	Test "Send signal to tor node controller"
-								(getting tor node controller error)
-			`,
-		)
+		t.Fatal()
 	}
 
-	_, l, err := SendSignal(c, "NEWNYM")
-	if err != nil {
-		t.Fatalf(
-			`
-				Test failed:	Test "Send signal to tor node controller"
-								(sending )	
-			`,
-		)
+	_, er := sendSignal(c, "SIGNAL NEWNYM")
+	if er != nil {
+		t.Fatal()
 	}
-
-	fmt.Println(l)
-
 }
