@@ -1,4 +1,4 @@
-package get
+package h
 
 import (
 	"encoding/json"
@@ -17,16 +17,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		Target:	Handler for GET request
 	*/
 
-	reqConfig := req.Request{ReqB: r}
-
-	reqConfig.Parse()
-
-	j, err := json.Marshal(reqConfig)
-	if err != nil {
-		fmt.Println(err)
+	reqCnf, reqCnfErr := req.Parse(r)
+	if reqCnfErr != nil {
+		fmt.Println(reqCnfErr)
 	}
 
-	w.Write(j)
+	reqSer, reqSerErr := json.Marshal(reqCnf)
+	if reqSerErr != nil {
+		fmt.Println(reqSerErr)
+	}
+
+	w.Write(reqSer)
 
 }
 

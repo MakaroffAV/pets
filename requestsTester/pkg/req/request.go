@@ -6,7 +6,7 @@ import (
 
 // ------------------------------------------------------------------------- //
 
-type Request struct {
+type request struct {
 
 	/*
 		Closed:	False
@@ -15,67 +15,92 @@ type Request struct {
 				describing the config of HTTP(s) request
 	*/
 
-	ReqB *http.Request
+	Host string
+	Path string
+	Meth string
 
-	host string
-	path string
-
-	qParams map[string][]string
-	hParams map[string][]string
+	DParams map[string][]string
+	QParams map[string][]string
+	HParams map[string][]string
 }
 
 // ------------------------------------------------------------------------- //
 
-func (req *Request) parseUParams() {
+func setUParams(req *request, r *http.Request) {
 
 	/*
 		Closed:	False
 		Author:	Makarov Aleksei
 		Target:	Parsing url params
+				of the HTTP(s) request
 	*/
 
-	req.host = req.ReqB.URL.Host
-	req.path = req.ReqB.URL.Path
+	req.Host = r.Host
+	req.Meth = r.Method
+	req.Path = r.URL.Path
 
 }
 
-func (req *Request) parseHParams() {
+func setHParams(req *request, r *http.Request) {
 
 	/*
 		Closed:	False
 		Author:	Makarov Aleksei
 		Target:	Parsing header params
+				of the HTTP(s) request
 	*/
 
-	req.hParams = req.ReqB.Header
+	req.HParams = r.Header
 
 }
 
-func (req *Request) parseQParams() {
+func setQParams(req *request, r *http.Request) {
 
 	/*
 		Closed:	False
 		Author:	Makarov Aleksei
 		Target:	Parsing query params
+				of the HTTP(s) request
 	*/
 
-	req.qParams = req.ReqB.URL.Query()
+	req.QParams = r.URL.Query()
+
+}
+
+func setDParams(req *request, r *http.Request) {
+
+	/*
+		Closed:	False
+		Author:	Makarov Aleksei
+		Target:	Parsing data body
+				of the HTTP(s) request
+	*/
+
+	err := r.ParseMultipartForm(0)
+	if err == nil {
+		req.DParams = r.PostForm
+	}
 
 }
 
 // ------------------------------------------------------------------------- //
 
-func (req Request) Parse() {
+func Parse(r *http.Request) (*request, error) {
 
 	/*
 		Closed:	False
 		Author:	Makarov Aleksei
-		Target:	Parsing HTTP request
+		Target:	Parsing HTTP(S) request
 	*/
 
-	req.parseHParams()
-	req.parseQParams()
-	req.parseUParams()
+	req := new(request)
+
+	setUParams(req, r)
+	setHParams(req, r)
+	setQParams(req, r)
+	setDParams(req, r)
+
+	return req, nil
 
 }
 
