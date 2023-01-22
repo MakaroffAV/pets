@@ -3,6 +3,7 @@ package req
 import (
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 // ------------------------------------------------------------------------- //
@@ -18,9 +19,12 @@ type request struct {
 
 	href *string
 	meth *string
+	data *string
 
 	hParams *map[string]string
 	qParams *map[string]string
+
+	reqBody *strings.Reader
 
 	req    *http.Request
 	reqErr error
@@ -47,7 +51,13 @@ func (r *request) setUpReq() {
 		qParams: *r.qParams,
 	}
 
-	r.req, r.reqErr = http.NewRequest(*r.meth, u.Build(), nil)
+	if r.data == nil {
+		r.reqBody = nil
+	} else {
+		r.reqBody = strings.NewReader(*r.data)
+	}
+
+	r.req, r.reqErr = http.NewRequest(*r.meth, u.Build(), r.reqBody)
 	if r.reqErr != nil {
 		return
 	}
