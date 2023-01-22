@@ -1,9 +1,10 @@
 package get
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
-	"requestsTester/pkg/request"
+	"requestsTester/pkg/req"
 )
 
 // ------------------------------------------------------------------------- //
@@ -16,14 +17,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		Target:	Handler for GET request
 	*/
 
-	fmt.Println("GET params were:", r.URL.Query())
+	reqConfig := req.Request{ReqB: r}
 
-	req, err := request.Parse(r)
+	reqConfig.Parse()
+
+	j, err := json.Marshal(reqConfig)
 	if err != nil {
-
+		fmt.Println(err)
 	}
 
-	w.Write(req)
+	w.Write(j)
 
 }
 
