@@ -36,9 +36,9 @@ type caseTestGetArg struct {
 var (
 	casesTestGetTemp = []caseTestGet{
 		{
-			exp: "sdfs",
+			exp: "{\"Host\":\"localhost:8080\",\"Path\":\"/\",\"Meth\":\"GET\",\"DParams\":null,\"QParams\":{\"alex\":[\"alex\"]},\"HParams\":{\"Accept-Encoding\":[\"gzip\"],\"Alex\":[\"alex\"],\"User-Agent\":[\"Go-http-client/1.1\"]}}",
 			arg: caseTestGetArg{
-				u: "https://ya.ru",
+				u: "http://localhost:8080/",
 				qParams: map[string]string{
 					"alex": "alex",
 				},
@@ -67,8 +67,9 @@ func TestGet(t *testing.T) {
 			t.Fatalf(
 				`
 					Test failed:	Test "Do HTTP/GET request"
-									(occurred unhandled error, debug it) 	
+									(occurred unhandled error (%s), debug it) 	
 				`,
+				respErr.Error(),
 			)
 		}
 
@@ -82,6 +83,15 @@ func TestGet(t *testing.T) {
 		}
 
 	}
+}
+
+func TestPost(t *testing.T) {
+
+	/*
+		Closed:	False
+		Author:	Makarov Aleksei
+		Target:	Test "Do HTTP/POST request"
+	*/
 }
 
 // ------------------------------------------------------------------------- //
