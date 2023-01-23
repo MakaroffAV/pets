@@ -24,8 +24,6 @@ type request struct {
 	hParams *map[string]string
 	qParams *map[string]string
 
-	reqBody *strings.Reader
-
 	req    *http.Request
 	reqErr error
 
@@ -52,14 +50,15 @@ func (r *request) setUpReq() {
 	}
 
 	if r.data == nil {
-		r.reqBody = nil
+		r.req, r.reqErr = http.NewRequest(*r.meth, u.Build(), nil)
+		if r.reqErr != nil {
+			return
+		}
 	} else {
-		r.reqBody = strings.NewReader(*r.data)
-	}
-
-	r.req, r.reqErr = http.NewRequest(*r.meth, u.Build(), r.reqBody)
-	if r.reqErr != nil {
-		return
+		r.req, r.reqErr = http.NewRequest(*r.meth, u.Build(), strings.NewReader(*r.data))
+		if r.reqErr != nil {
+			return
+		}
 	}
 
 	for k, v := range *r.hParams {
